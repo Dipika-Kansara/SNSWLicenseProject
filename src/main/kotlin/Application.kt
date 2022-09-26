@@ -1,7 +1,8 @@
+import io.ktor.http.*
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
-import io.ktor.http.*
+
 
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
@@ -13,10 +14,10 @@ import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.plugins.cors.routing.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import org.litote.kmongo.KMongo
 
-
-
-
+val client = KMongo.createClient()
+val db = client.getDatabase("SNSWDriverLicenses")
 
 fun main(args: Array<String>) {
     io.ktor.server.netty.EngineMain.main(args)
@@ -33,7 +34,8 @@ fun Application.init() {
         allowHeader(HttpHeaders.ContentType)
         allowHeader(HttpHeaders.Authorization)
     }
-   install(Authentication){
+
+    install(Authentication){
       jwt{
           realm = "license.com.au"
           verifier(
@@ -55,5 +57,13 @@ fun Application.init() {
 
     routing {
 
+
+        accountRoute(db)
+
+
+
+        }
+
+
     }
-}
+
