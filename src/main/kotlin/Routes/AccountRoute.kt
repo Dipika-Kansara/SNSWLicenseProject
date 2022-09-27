@@ -21,7 +21,7 @@ fun Route.accountRoute (db:MongoDatabase) {
         post("/register") {
             val data = call.receive<User>()
             val hashed = BCrypt.hashpw(data.password, BCrypt.gensalt())
-            val user = User(data.username, password = hashed, roles = listOf("customers"))
+            val user = User(data.firstName, data.lastName, data.dob,  data.email, password = hashed, data.mobile,roles = listOf("customers"))
             usersCollection.insertOne(user)
             call.respond(HttpStatusCode.Created)
 
@@ -30,7 +30,7 @@ fun Route.accountRoute (db:MongoDatabase) {
         post("/login") {
             val data = call.receive<User>()
 
-            val filter = "{username:/^${data.username}$/i}"
+            val filter = "{username:/^${data.email}$/i}"
             val user = usersCollection.findOne(filter)
 
             if (user == null) {
@@ -44,7 +44,7 @@ fun Route.accountRoute (db:MongoDatabase) {
             val token = JWT.create()
                 .withAudience("http://localhost:8080")
                 .withIssuer("http://localhost:8080")
-                .withClaim("username", user?.username)
+                .withClaim("username", user?.email)
                 .withClaim("roles", user?.roles)
                 .withExpiresAt(expiry)
                 .sign(Algorithm.HMAC256("secret"))
