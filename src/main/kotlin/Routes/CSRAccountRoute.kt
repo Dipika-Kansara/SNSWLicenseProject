@@ -1,3 +1,6 @@
+package Routes
+
+import Models.CSR.CSRUser
 import Models.Customer.Login
 import Models.Customer.User
 import com.auth0.jwt.JWT
@@ -8,31 +11,31 @@ import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import org.litote.kmongo.*
+import org.litote.kmongo.findOne
+import org.litote.kmongo.getCollection
 import org.mindrot.jbcrypt.BCrypt
 import java.util.*
 
+fun Route.CSRAccountRoute (db: MongoDatabase) {
 
-fun Route.accountRoute (db:MongoDatabase) {
-
-    val usersCollection = db.getCollection<User>("Users")
+    val CSRSCollection = db.getCollection<CSRUser>("CSRS")
 
     route("/account") {
 
-        post("/register") {
-            val data = call.receive<User>()
+        post("/register/csr") {
+            val data = call.receive<CSRUser>()
             val hashed = BCrypt.hashpw(data.password, BCrypt.gensalt())
-            val user = User(data.firstName, data.lastName, data.dob,  data.email, password = hashed, data.mobile,roles = listOf("customers"))
-            usersCollection.insertOne(user)
+            val CSRuser = CSRUser(data.firstName, data.lastName, data.email, data.staffId, password = hashed,roles = listOf("CSRS"))
+            CSRSCollection.insertOne(CSRuser)
             call.respond(HttpStatusCode.Created)
 
         }
 
-        post("/login") {
+        post("/login/csr") {
             val data = call.receive<Login>()
 
             val filter = "{email:/^${data.email}$/i}"
-            val user = usersCollection.findOne(filter)
+            val user = CSRSCollection.findOne(filter)
 
             if (user == null) {
                 return@post call.respond(HttpStatusCode.BadRequest)

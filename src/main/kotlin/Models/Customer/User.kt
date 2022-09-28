@@ -1,4 +1,4 @@
-package Models
+package Models.Customer
 
 import ObjectIdAsStringSerializer
 import kotlinx.serialization.Serializable

@@ -1,3 +1,5 @@
+import Routes.CSRAccountRoute
+import Routes.logHoursRoute
 import io.ktor.http.*
 
 import com.auth0.jwt.JWT
@@ -52,6 +54,8 @@ fun Application.init() {
 
     routing {
         accountRoute(db)
+        logHoursRoute(db)
+        CSRAccountRoute(db)
         }
 
 
