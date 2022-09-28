@@ -11,6 +11,7 @@ data class User(
                 val firstName : String ,
                 val lastName : String,
                 val dob : String,
+                val licenseNumber : String,
                 val email : String,
                 val password: String,
                 val mobile : Long,

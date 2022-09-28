@@ -22,7 +22,7 @@ fun Route.accountRoute (db:MongoDatabase) {
         post("/register") {
             val data = call.receive<User>()
             val hashed = BCrypt.hashpw(data.password, BCrypt.gensalt())
-            val user = User(data.firstName, data.lastName, data.dob,  data.email, password = hashed, data.mobile,roles = listOf("customers"))
+            val user = User(data.firstName, data.lastName, data.dob, data.licenseNumber,  data.email, password = hashed, data.mobile,roles = listOf("customers"))
             usersCollection.insertOne(user)
             call.respond(HttpStatusCode.Created)
 
