@@ -1,3 +1,4 @@
+import Models.Login
 import Models.User
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
@@ -28,9 +29,9 @@ fun Route.accountRoute (db:MongoDatabase) {
         }
 
         post("/login") {
-            val data = call.receive<User>()
+            val data = call.receive<Login>()
 
-            val filter = "{username:/^${data.email}$/i}"
+            val filter = "{email:/^${data.email}$/i}"
             val user = usersCollection.findOne(filter)
 
             if (user == null) {
@@ -44,7 +45,7 @@ fun Route.accountRoute (db:MongoDatabase) {
             val token = JWT.create()
                 .withAudience("http://localhost:8080")
                 .withIssuer("http://localhost:8080")
-                .withClaim("username", user?.email)
+                .withClaim("email", user?.email)
                 .withClaim("roles", user?.roles)
                 .withExpiresAt(expiry)
                 .sign(Algorithm.HMAC256("secret"))

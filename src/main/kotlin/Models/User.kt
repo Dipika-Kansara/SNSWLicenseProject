@@ -8,7 +8,7 @@ import org.litote.kmongo.newId
 
 @Serializable
 data class User(
-                val firstName : String,
+                val firstName : String ,
                 val lastName : String,
                 val dob : String,
                 val email : String,
