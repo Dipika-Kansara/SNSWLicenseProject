@@ -5,6 +5,8 @@ import com.auth0.jwt.algorithms.Algorithm
 import com.mongodb.client.MongoDatabase
 import io.ktor.http.*
 import io.ktor.server.application.*
+import io.ktor.server.auth.*
+import io.ktor.server.auth.jwt.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -27,6 +29,24 @@ fun Route.accountRoute (db:MongoDatabase) {
             call.respond(HttpStatusCode.Created)
 
         }
+
+        authenticate {
+            get("/loggedindetails"){
+                val principal = call.principal<JWTPrincipal>()
+
+                val email = principal?.payload?.getClaim("email").toString().replace("\"", "")
+                val emailFilter = "{email:/^${email}$/i}"
+                val user = usersCollection.findOne(emailFilter)
+                if(user == null) {
+                    return@get call.respond(HttpStatusCode.NotFound)
+                }
+                call.respond(user)
+
+
+            }
+        }
+
+
 
         post("/login") {
             val data = call.receive<Login>()
