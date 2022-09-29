@@ -18,7 +18,7 @@ fun Route.logHoursRoute (db: MongoDatabase) {
         post("/loghours") {
 
                 val data = call.receive<LogHours>()
-                val logHours= LogHours(data.date,data.time,data.hours, data.minutes, data.instructor, data.tripDetails)
+                val logHours= LogHours(data.startSession,data.endSession,data.instructor)
                 logHoursCollection.insertOne(logHours)
                 call.respond(HttpStatusCode.Created,logHours)
         }
