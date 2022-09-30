@@ -5,14 +5,15 @@ import kotlinx.serialization.Serializable
 import org.litote.kmongo.Id
 import org.litote.kmongo.newId
 
-
 @Serializable
-data class LogHours(
-    val startSession: String,
-    val endSession: String,
-    val instructor: Boolean,
+data class UserInfo(
+    val firstName : String ,
+    val lastName : String,
+    val dob : String,
+    val licenseNumber : String,
+    val email : String,
+    val mobile : Long,
+    val roles: List<String> = listOf(),
     @Serializable(with = ObjectIdAsStringSerializer::class)
     val _id: Id<User> = newId()
 )
-
-

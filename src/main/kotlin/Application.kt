@@ -1,4 +1,5 @@
 import Routes.CSRAccountRoute
+import Routes.licenseRoute
 import Routes.logHoursRoute
 import io.ktor.http.*
 
@@ -29,6 +30,8 @@ fun Application.init() {
     install(CORS) {
         allowHost("*")
         allowMethod(HttpMethod.Post)
+        allowMethod(HttpMethod.Get)
+        allowMethod(HttpMethod.Delete)
         allowHeader(HttpHeaders.ContentType)
         allowHeader(HttpHeaders.Authorization)
     }
@@ -56,6 +59,7 @@ fun Application.init() {
         accountRoute(db)
         logHoursRoute(db)
         CSRAccountRoute(db)
+        licenseRoute(db)
         }
 
 

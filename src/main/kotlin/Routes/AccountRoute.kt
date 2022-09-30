@@ -1,5 +1,6 @@
 import Models.Customer.Login
 import Models.Customer.User
+import Models.Customer.UserInfo
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import com.mongodb.client.MongoDatabase
@@ -21,12 +22,14 @@ fun Route.accountRoute (db:MongoDatabase) {
 
     route("/account") {
 
+        
+
         post("/register") {
             val data = call.receive<User>()
             val hashed = BCrypt.hashpw(data.password, BCrypt.gensalt())
             val user = User(data.firstName, data.lastName, data.dob, data.licenseNumber,  data.email, password = hashed, data.mobile,roles = listOf("customers"))
             usersCollection.insertOne(user)
-            call.respond(HttpStatusCode.Created)
+            call.respond(HttpStatusCode.Created, data)
 
         }
 
