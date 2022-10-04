@@ -13,6 +13,7 @@ data class License(
     var expiryDate: String = LocalDate.now().plusYears(5).toString(),
     var issuingCSR: String = "",
     var number: Int = 0,
+
     @Serializable(with =ObjectIdAsStringSerializer::class)
     val val_id: Id<License> = newId(),
 )

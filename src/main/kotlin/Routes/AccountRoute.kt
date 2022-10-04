@@ -21,13 +21,10 @@ fun Route.accountRoute (db:MongoDatabase) {
     val usersCollection = db.getCollection<User>("Users")
 
     route("/account") {
-
-        
-
-        post("/register") {
+          post("/register") {
             val data = call.receive<User>()
             val hashed = BCrypt.hashpw(data.password, BCrypt.gensalt())
-            val user = User(data.firstName, data.lastName, data.dob, data.licenseNumber,  data.email, password = hashed, data.mobile,roles = listOf("customers"))
+            val user = User(data.firstName, data.lastName, data.dob, data.address,  data.email, password = hashed, data.mobile,roles = listOf("customers"))
             usersCollection.insertOne(user)
             call.respond(HttpStatusCode.Created, data)
 
@@ -36,7 +33,6 @@ fun Route.accountRoute (db:MongoDatabase) {
         authenticate {
             get("/loggedindetails"){
                 val principal = call.principal<JWTPrincipal>()
-
                 val email = principal?.payload?.getClaim("email").toString().replace("\"", "")
                 val emailFilter = "{email:/^${email}$/i}"
                 val user = usersCollection.findOne(emailFilter)
@@ -44,8 +40,7 @@ fun Route.accountRoute (db:MongoDatabase) {
                     return@get call.respond(HttpStatusCode.NotFound)
                 }
                 call.respond(user)
-
-
+                println(user.firstName)
             }
         }
 
