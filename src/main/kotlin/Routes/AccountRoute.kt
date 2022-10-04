@@ -1,6 +1,6 @@
 import Models.Customer.Login
 import Models.Customer.User
-import Models.Customer.UserInfo
+import Models.Customer.UserDTO
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import com.mongodb.client.MongoDatabase
@@ -35,6 +35,19 @@ fun Route.accountRoute (db:MongoDatabase) {
 
         authenticate {
             get("/loggedindetails"){
+                val principal = call.principal<JWTPrincipal>()
+
+                val email = principal?.payload?.getClaim("email").toString().replace("\"", "")
+                val emailFilter = "{email:/^${email}$/i}"
+                val user = usersCollection.findOne(emailFilter)
+                if(user == null) {
+                    return@get call.respond(HttpStatusCode.NotFound)
+                }
+                call.respond(user)
+
+
+            }
+            get("/search"){
                 val principal = call.principal<JWTPrincipal>()
 
                 val email = principal?.payload?.getClaim("email").toString().replace("\"", "")
