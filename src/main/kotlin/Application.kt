@@ -56,6 +56,10 @@ fun Application.init() {
   }
 
     routing {
+        get("/") {
+            call.respondText("Service NSW")
+        }
+
         accountRoute(db)
         logHoursRoute(db)
         CSRAccountRoute(db)
